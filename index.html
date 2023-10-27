@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            background: #edb76499;
+            font-family: "Arial", sans-serif;
+        }
+
+        section {
+            text-align: center;
+        }
+
+        .game--container {
+            display: grid;
+            grid-template-columns: repeat(3, auto);
+            width: 306px;
+            margin: 50px auto;
+        }
+
+        .cell {
+            font-family: "Permanent Marker", cursive;
+            width: 100px;
+            height: 100px;
+            box-shadow: 0 0 0 1px #333333;
+            border: 1px solid #333333;
+            cursor: pointer;
+            line-height: 100px;
+            font-size: 60px;
+            text-align: center;
+        }
+
+        .cell.x {
+            color: #FF5733; /* Change the color for X */
+        }
+
+        .cell.o {
+            color: #3385FF; /* Change the color for O */
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h1 class="game--title">Tic Tac Toe</h1>
+        <div class="game--container">
+            <div data-cell-index="0" class="cell"></div>
+            <div data-cell-index="1" class="cell"></div>
+            <div data-cell-index="2" class="cell"></div>
+            <div data-cell-index="3" class="cell"></div>
+            <div data-cell-index="4" class="cell"></div>
+            <div data-cell-index="5" class="cell"></div>
+            <div data-cell-index="6" class="cell"></div>
+            <div data-cell-index="7" class="cell"></div>
+            <div data-cell-index="8" class="cell"></div>
+        </div>
+        <h2 class="game--status" style="color: #3385FF;"></h2>
+        <button class="game--restart" style="
+    background: chartreuse;
+    box-shadow: 5px 6px #ff000078;
+">Restart Game</button>
+<br><br><br><br><br>
+<button class="game--restart" style="
+    background: rgb(26, 198, 255);
+    box-shadow: 5px 6px #ff00a678;
+    font-size: large;
+">ANURAG MAURYA</button>
+<br><br>
+<a href="https://instagram.com/i_am_anurag_maurya?igshid=MzRlODBiNWFlZA=="> <!-- Replace "https://example.com" with the URL you want to link to -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwSNRhR-g_EWIxrPrHHJ08fbP1QxK-92P4A&usqp=CAU" class="img-thumbnail" alt="...">
+</a>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const statusDisplay = document.querySelector('.game--status');
+
+            let gameActive = true;
+            let currentPlayer = "X";
+            let gameState = ["", "", "", "", "", "", "", "", ""];
+
+            const winningMessage = () => `Player ${currentPlayer} has won!`;
+            const drawMessage = () => `Game ended in a draw!`;
+            const currentPlayerTurn = () => `It's ${currentPlayer}'s turn`;
+
+            statusDisplay.innerHTML = currentPlayerTurn();
+
+            const winningConditions = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            function handleCellPlayed(clickedCell, clickedCellIndex) {
+                gameState[clickedCellIndex] = currentPlayer;
+                clickedCell.innerHTML = currentPlayer;
+                clickedCell.classList.add(currentPlayer.toLowerCase()); // Add the class for X or O
+            }
+
+            function handlePlayerChange() {
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+                statusDisplay.innerHTML = currentPlayerTurn();
+            }
+
+            function handleResultValidation() {
+                let roundWon = false;
+                for (let i = 0; i <= 7; i++) {
+                    const winCondition = winningConditions[i];
+                    let a = gameState[winCondition[0]];
+                    let b = gameState[winCondition[1]];
+                    let c = gameState[winCondition[2]];
+                    if (a === '' || b === '' || c === '') {
+                        continue;
+                    }
+                    if (a === b && b === c) {
+                        roundWon = true;
+                        break;
+                    }
+                }
+
+                if (roundWon) {
+                    statusDisplay.innerHTML = winningMessage();
+                    gameActive = false;
+                    return;
+                }
+
+                let roundDraw = !gameState.includes("");
+                if (roundDraw) {
+                    statusDisplay.innerHTML = drawMessage();
+                    gameActive = false;
+                    return;
+                }
+
+                handlePlayerChange();
+            }
+
+            function handleCellClick(clickedCellEvent) {
+                const clickedCell = clickedCellEvent.target;
+                const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
+
+                if (gameState[clickedCellIndex] !== "" || !gameActive) {
+                    return;
+                }
+
+                handleCellPlayed(clickedCell, clickedCellIndex);
+                handleResultValidation();
+            }
+
+            function handleRestartGame() {
+                gameActive = true;
+                currentPlayer = "X";
+                gameState = ["", "", "", "", "", "", "", "", ""];
+                statusDisplay.innerHTML = currentPlayerTurn();
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.innerHTML = "";
+                    cell.classList.remove('x', 'o'); // Remove the X and O classes
+                });
+            }
+
+            document.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click', handleCellClick));
+            document.querySelector('.game--restart').addEventListener('click', handleRestartGame);
+        });
+    </script>
+</body>
+</html>
